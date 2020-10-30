@@ -1,0 +1,39 @@
+.mainImg {
+    width: 100%;
+}
+@media screen and (max-width: 700px) {
+    .mainImg{
+        height: 200px;
+    }
+}
+.text {
+    font-family: "Comic Sans MS", sans-serif;	
+}
+.main {
+    font-weight: 400;
+    font-size: large;
+}
+.navbar-nav a{
+    font-size: larger;
+    margin-left: 50px;
+    font-stretch: expanded;
+    text-align: center;
+  }
+  .navbar-nav a:hover{
+    color: white !important;
+    border-radius: 5px; 
+  }
+.homeText {
+    font-size: larger;
+    font-family: 'Trebuchet MS', sans-serif;
+    font-style: oblique;
+}
+.parallax{
+    background-image: url('../images/plasma2.jpg');
+    min-height: 500px;
+    min-width: 90%; 
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
