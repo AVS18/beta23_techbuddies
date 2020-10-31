@@ -29,4 +29,3 @@ class Profile(models.Model):
     no_of_times_tested = models.IntegerField(default=1)
     reports = models.FileField(upload_to='docs/')
     hospital_name = models.CharField(max_length=200)
-
