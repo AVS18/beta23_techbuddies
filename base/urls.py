@@ -8,5 +8,8 @@ urlpatterns = [
     path('register',views.register,name="register"),
     path('logout',views.logout,name="logout"),
     path('dashboard',views.dashboard,name="dashboard"),
-    path('profile',views.profile,name="profile")
+    path('profile',views.profile,name="profile"),
+    path('display',views.display,name="display"),
+    path('plasma_contact/<str:other>',views.plasma_contact,name="plasma_contact"),
+    path('displayContact',views.displayContact,name="displayContact")
 ]

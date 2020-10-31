@@ -29,3 +29,8 @@ class Profile(models.Model):
     no_of_times_tested = models.IntegerField(default=1)
     reports = models.FileField(upload_to='docs/')
     hospital_name = models.CharField(max_length=200)
+
+class PlasmaContact(models.Model):
+    requested_by = models.ForeignKey(User,on_delete=models.CASCADE, related_name="requested_by")
+    requested_to = models.ForeignKey(User,on_delete=models.CASCADE, related_name="requested_to")
+    status = models.CharField(max_length=10,choices=(('Accepted','Accepted'),('Pending','Pending'),('Rejected','Rejected')))

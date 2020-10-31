@@ -1,9 +1,8 @@
 from django.shortcuts import render,redirect
-from .models import SiteAnnouncements,ContactUs,User,Profile
+from .models import SiteAnnouncements,ContactUs,User,Profile, PlasmaContact
 from django.contrib import messages,auth
 from django.contrib.auth import authenticate
 from django.core.mail import send_mail
-
 # Create your views here.
 def home(request):
     announcement = SiteAnnouncements.objects.all()
@@ -107,11 +106,57 @@ def profile(request):
             messages.info(request,'Error Occured Try again later')
             return redirect('/dashboard')
     obj = None
-    obj = Profile.objects.get(person=request.user)
+    try:
+        obj = Profile.objects.get(person=request.user)
+    except:
+        obj = None
     if obj is not None:
         return render(request,'saved_profile.html',{'obj':obj})
     else:
         return render(request,'profile.html')
+def check_profile_exist(request):
+    try:
+        return Profile.objects.get(person=request.user)
+    except:
+        return None
+def display(request):
+    if request.user.is_authenticated is False:
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Login to Continue')
+        return redirect('/')
+    my_profile, obj = check_profile_exist(request), None
+    if request.user.user_type=="Donor":
+        if my_profile is not None:
+            obj = Profile.objects.filter(person__user_type="Receiver",blood_group=my_profile.blood_group).union(Profile.objects.filter(person__user_type="Receiver",blood_group='O'+my_profile.blood_group[-1]))
+            if len(obj)==0:
+                storage = messages.get_messages(request)
+                storage.used = True
+                messages.info(request,'No Donors Available for the request')
+                return redirect('/')
+        else:
+            obj = Profile.objects.filter(person__user_type="Receiver")
+        return render(request,"display_donor.html",{'obj':obj})
+    if request.user.user_type=="Receiver":
+        if my_profile is not None:
+            obj = Profile.objects.filter(person__user_type="Donor",blood_group=my_profile.blood_group).union(Profile.objects.filter(person__user_type="Donor",blood_group='O'+my_profile.blood_group[-1]))
+            if len(obj)==0:
+                storage = messages.get_messages(request)
+                storage.used = True
+                messages.info(request,'No Donors Available for the request')
+                return redirect('/dashboard')
+        else:
+            obj = Profile.objects.filter(person__user_type="Donor")
+        return render(request,"display_donor.html",{'obj':obj})
 
-def donorDisplay(request):
-    None
+def plasma_contact(request,other):
+    PlasmaContact.objects.create(requested_by=request.user,requested_to=User.objects.get(username=other),status="Pending")
+    storage = messages.get_messages(request)
+    storage.used = True
+    messages.info(request,'Request Placed Successfully')
+    return redirect('/dashboard')
+
+def displayContact(request):
+    requests_obtained = PlasmaContact.objects.filter(requested_to=request.user)
+    requests_made = PlasmaContact.objects.filter(requested_by=request.user)
+    return render(request,'displayContact.html',{'requests_obtained':requests_obtained,'requests_made':requests_made})
