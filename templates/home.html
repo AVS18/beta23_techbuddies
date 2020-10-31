@@ -32,18 +32,44 @@
             </li>
           </ul>
           <ul class="navbar-nav">
+            {%if request.user.is_authenticated == False%}
             <li class="nav-item">
-                <a type="button" data-toggle="modal" data-target="#" class="btn-outline-primary nav-link">Login</a>
+                <a type="button" data-toggle="modal" data-target="#login" class="btn-outline-primary nav-link">Login</a>
             </li>
             <li class="nav-item">
-                <a type="button" data-toggle="modal" data-target="#" class="btn-outline-info nav-link">Register</a>
+                <a type="button" data-toggle="modal" data-target="#register" class="btn-outline-info nav-link">Register</a>
             </li>
+            {%else%}
+            <li class="nav-item">
+                <a type="button" href="/logout" class="btn-outline-info nav-link">Logout</a>
+            </li>
+            {%endif%}
+
           </ul>
         </div>
-    </nav>   
-    <marquee behavior="" direction="">
-        <!--Site Announcements-->
+    </nav>
+    <div class="alert alert-info">   
+    <marquee behavior="" direction="">    
+            <p>
+                {%for item in announcement%}
+                {{item.message}} Link: <a href="{{item.link}}">Click Here</a> &nbsp;&nbsp;
+                {%endfor%}  
+            </p>
     </marquee>
+    <div class="container-fluid">
+        {% if messages %}
+        {% for message in messages %}
+        <div {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+          <div class="alert alert-success" role="alert">
+            {{message}} 
+          </div>
+        </div>
+        {% endfor %}
+      {%endif%}
+        {%block content%}
+        {%endblock%}
+    </div>
+    </div>
     <section id="home">
         <img class="mainImg" src="{% static 'images/plasma.jpg' %}" alt="plasma">
         <div class="container">
@@ -61,5 +87,136 @@
             </ul>
         </div>
     </section>
+    <div class="parallax2"></div>
+    <section id="goal">
+        <div class="container">
+            <br><br><p class="homeText">Our Goal</p>
+            <ul>
+                <li>The Goal of this platform for reliable blood plasma identifiers</li>
+                <li>Helps patients to recover from COVID 19 through plasma transfer</li>
+            </ul>
+        </div><br>
+    </section>
+    <div class="parallax3"></div>
+    <section id="contact"> 
+        <div class="container">
+            <br><br><p class="homeText">Want to Join Team</p>
+            <form action="/contact" method="POST">
+                {%csrf_token%}
+                <div class="form-group row">
+                    <div class="col-sm">
+                        <label for="conname">Name</label>
+                        <input type="text" name="name" class="form-control" placeholder="Enter your Name" id="conname">
+                    </div>
+                    <div class="col-sm">
+                        <label for="conemail">Email</label>
+                        <input type="email" name="email" class="form-control" placeholder="Enter your Email Address" id="conemail">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm">
+                        <label for="conmobile">Phone Number</label>
+                        <input type="text" name="phone" class="form-control" placeholder="Enter your Mobile Number" id="conmobile">
+                    </div>
+                    <div class="col-sm">
+                        <label for="conmessage">Message</label>
+                        <input type="text" name="message" class="form-control" placeholder="Enter your Message" id="conmessage">
+                    </div>
+                </div>
+                <input type="submit" class="btn btn-primary" value="Submit">
+            </form>
+        </div>
+    </section>
+    <div class="footer text">
+        Version Beta 3.0 Hackathon
+    </div>
+    <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="login" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Login</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action="/login" method="POST">
+                {%csrf_token%}
+                <div class="row">
+                  <div class="col-sm">
+                    <div class="form-group">
+                      <label for="name">UserName</label>
+                      <input type="text" name="username" id="name" required class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-sm">
+                    <div class="form-group">
+                      <label for="upassword">Password</label>
+                      <input type="password" name="password" id="upassword" required class="form-control">
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Login</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade bd-example-modal-lg" id="register" tabindex="-1" role="dialog" aria-labelledby="login" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Register</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <form action="/register" method="POST">
+                    {%csrf_token%}
+                  <div class="row">
+                    <div class="col-sm">
+                      <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" name="first_name" id="name" required class="form-control">
+                      </div>
+                    </div>
+                    <div class="col-sm">
+                      <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" id="email" required class="form-control">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm">
+                      <div class="form-group">
+                        <label for="umobile">Mobile</label>
+                        <input type="text" name="phone" id="umobile" required class="form-control">
+                      </div>
+                    </div>
+                    <div class="col-sm">
+                      <div class="form-group">
+                        <label for="stream">Type</label>
+                        <select name="par_stream" id="stream" class="form-control">
+                            <option value="Select">Select</option>
+                            <option value="Donor">Donor</option>
+                            <option value="Receiver">Receiver</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Register</button>
+            </div>
+          </div>
+        </div>
+      </div>
 </body>
 </html>
