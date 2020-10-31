@@ -40,10 +40,16 @@
             </li>
           </ul>
         </div>
-    </nav>   
-    <marquee behavior="" direction="">
-        <!--Site Announcements-->
+    </nav>
+    <div class="alert alert-info">   
+    <marquee behavior="" direction="">    
+            <p>
+                {%for item in announcement%}
+                {{item.message}} Link: <a href="{{item.link}}">Click Here</a> &nbsp;&nbsp;
+                {%endfor%}  
+            </p>
     </marquee>
+    </div>
     <section id="home">
         <img class="mainImg" src="{% static 'images/plasma.jpg' %}" alt="plasma">
         <div class="container">
