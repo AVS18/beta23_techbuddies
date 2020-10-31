@@ -22,10 +22,12 @@
       <div class="list-group list-group-flush">
         <a href="#" class="list-group-item list-group-item-action bg-light">Home</a>
         <a href="/profile" class="list-group-item list-group-item-action bg-light">Profile</a>
-        <a href="#" class="list-group-item list-group-item-action bg-light">C</a>
-        <a href="#" class="list-group-item list-group-item-action bg-light">D</a>
-        <a href="#" class="list-group-item list-group-item-action bg-light">E</a>
-        <a href="#" class="list-group-item list-group-item-action bg-light">F</a>
+        {%if request.user.user_type == "Donor"%}
+        <a href="/display" class="list-group-item list-group-item-action bg-light">Receiver List</a>
+        {%else%}
+        <a href="/display" class="list-group-item list-group-item-action bg-light">Donor List</a>
+        {%endif%}
+        <a href="/displayContact" class="list-group-item list-group-item-action bg-light">Check Request</a>
         <a href="/logout" class="list-group-item list-group-item-action bg-light">Logout</a>
       </div>
     </div>

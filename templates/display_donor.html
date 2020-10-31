@@ -1,0 +1,36 @@
+{% extends "dashboard.html"%}
+{%block content%}
+<div class="card-deck">
+    {%if request.user.user_type == "Donor"%}
+    {%for item in obj%}
+    <div class="card outline-primary">
+      <h4 class="card-title">Status: {{item.current_health_status}}</h4>
+      <div class="card-body">
+        <ul class="list-group">
+            <li class="list-group-item">Date tested Positive : {{item.positive_date}} </li>
+            <li class="list-group-item">Blood Group : {{item.blood_group}}</li>
+            <li class="list-group-item">Count of Covid Test : {{item.no_of_times_tested}}</li>
+            <li class="list-group-item">Verified User: {{item.person.verification_status}}</li>
+          </ul>
+      </div>
+      <a class="btn btn-info" href="/plasma_contact/{{item.person.username}}">Click to Contact</a>
+    </div>  
+    {%endfor%}
+    {%else%}
+    {%for item in obj%}
+    <div class="card outline-primary">
+        Blood Group:<h4 class="card-title">{{item.blood_group}}</h4>
+        <div class="card-body">
+          <ul class="list-group">
+              <li class="list-group-item">Date tested Positive : {{item.positive_date}} </li>
+              <li class="list-group-item">Date tested Negative : {{item.negative_date}} </li>
+              <li class="list-group-item">Vaccinated : {{item.vaccinated}}</li>
+              <li class="list-group-item">Verified User: {{item.person.verification_status}}</li>
+            </ul>
+        </div>
+        <a class="btn btn-info" href="/plasma_contact/{{item.person.username}}">Click to Contact</a>
+    </div>  
+    {%endfor%}
+    {%endif%}
+  </div>
+{%endblock%}
