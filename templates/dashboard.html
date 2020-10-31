@@ -38,6 +38,18 @@
         <p class="justify-content-end ml-auto" style="font-style: oblique;">Welcome {request.user.username}</p>
       </nav>
       <div class="container-fluid">
+        {% if messages %}
+        {% for message in messages %}
+        <div {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+          <div class="alert alert-success" role="alert">
+            {{message}} 
+          </div>
+        </div>
+        {% endfor %}
+      {%endif%}
+      </div>
+    
+      <div class="container-fluid">
         {%block content%}
         {%endblock%}
       </div>
