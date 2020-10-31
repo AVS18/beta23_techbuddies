@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from s3direct.fields import S3DirectField
 # Create your models here.
 class User(AbstractUser):
     phone = models.BigIntegerField(null=True,blank=True)
@@ -26,6 +27,6 @@ class Profile(models.Model):
     vaccinated = models.CharField(max_length=5,blank=True,null=True,choices=(("Yes","Yes"),("No","No")))
     current_health_status=models.CharField(max_length=10,blank=True,null=True,choices=(("Normal","Normal"),("Average","Average"),("Critical","Critical")))
     no_of_times_tested = models.IntegerField(default=1)
-    reports = models.FileField(upload_to='reports')
+    reports = models.FileField(upload_to='docs/')
     hospital_name = models.CharField(max_length=200)
 
