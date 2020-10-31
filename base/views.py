@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
-from .models import SiteAnnouncements,ContactUs
-from django.contrib import messages
+from .models import SiteAnnouncements,ContactUs,User
+from django.contrib import messages,auth
+from django.contrib.auth import authenticate
 from django.core.mail import send_mail
 
 # Create your views here.
@@ -26,13 +27,60 @@ def contact(request):
     return redirect('/')
 
 def login(request):
-    #todo
-    return redirect('/')
+    if request.method=="POST":
+        username=request.POST["username"]
+        password=request.POST["password"]
+        obj = authenticate(username=username,password=password)
+        if obj is not None:
+            auth.login(request,obj)
+            storage = messages.get_messages(request)
+            storage.used = True
+            messages.info(request,'Login Successful')
+        else:
+            storage = messages.get_messages(request)
+            storage.used = True
+            messages.info(request,'Please Check your password and try again')
+    return redirect('/dashboard')
 
 def register(request):
-    #todo
+    if request.method=="POST":
+        try:
+            first_name=request.POST["first_name"]
+            email = request.POST["email"]
+            phone = request.POST["phone"]
+            user_type = request.POST["type"]
+            username = request.POST["username"]
+            password = request.POST["password"]
+            User.objects.create_user(first_name=first_name,email=email,phone=phone,user_type=user_type,username=username,password=password)
+            storage = messages.get_messages(request)
+            storage.used = True
+            messages.info(request,'Registration Success')
+        except Exception as e:
+            print(e)
+            storage = messages.get_messages(request)
+            storage.used = True
+            messages.info(request,'Registration Failed. Try again Later')
     return redirect('/')
 
 def logout(request):
-    #todo
+    auth.logout(request)
+    storage = messages.get_messages(request)
+    storage.used = True
+    messages.info(request,'Logout Successful. Thank you')
     return redirect('/')
+
+def dashboard(request):
+    if request.user.is_authenticated is False:
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Login to Continue')
+        return redirect('/')
+    return render(request,'dashboard.html')
+
+def profile(request):
+    if request.user.is_authenticated is False:
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Login to Continue')
+        return redirect('/')
+    return render(request,'profile.html')

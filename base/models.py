@@ -17,3 +17,15 @@ class ContactUs(models.Model):
     phone=models.BigIntegerField()
     email=models.EmailField()
     message=models.CharField(max_length=200)
+
+class Profile(models.Model):
+    person = models.ForeignKey(User,on_delete=models.CASCADE)
+    blood_group = models.CharField(max_length=5,choices=(('O+','O+'),('O-','O-'),('A+','A+'),('A-','A-'),('B+','B+'),('B-','B-'),('AB+','AB+'),('AB-','AB-')))
+    positive_date = models.DateField()
+    negative_date = models.DateField(blank=True,null=True)
+    vaccinated = models.CharField(max_length=5,blank=True,null=True,choices=(("Yes","Yes"),("No","No")))
+    current_health_status=models.CharField(max_length=10,blank=True,null=True,choices=(("Normal","Normal"),("Average","Average"),("Critical","Critical")))
+    no_of_times_tested = models.IntegerField(default=1)
+    reports = models.FileField(upload_to='reports')
+    hospital_name = models.CharField(max_length=200)
+
