@@ -1,0 +1,50 @@
+{%extends 'dashboard.html'%}
+{%block content%}
+<br><br>
+<form action="/profile" method="POST" enctype="multipart/form-data">
+    {%csrf_token%}
+    <div class="form-group row">
+        <div class="col-sm">
+            <label for="bgroup">Blood Group</label>
+            <input type="text" name="bgroup" class="form-control" value="{{obj.blood_group}}">
+        </div>
+        <div class="col-sm">
+            <label for="cad">Date on Which COVID 19 Tested Positive</label>
+            <input type="text" id="cad" name="positive_date" class="form-control" value="{{obj.positive_date}}">
+        </div>
+    </div>
+    {%if request.user.user_type == "Donor"%}
+    <div class="form-group row">
+        <div class="col-sm">
+            <label for="cad">Date on Which COVID 19 Tested Negative</label>
+            <input type="text" id="cad" name="negative_date" class="form-control" value="{{obj.negative_date}}">
+        </div>
+        <div class="col-sm">
+            <label for="vac">Vaccinated</label>
+            <input type="text" id="vac" name="vaccinated" class="form-control" value="{{obj.vaccinated}}">
+        </div>
+    </div>
+    {%else%}
+    <div class="form-group row">
+        <div class="col-sm">
+            <label for="chs">Current Health Status</label>
+            <input type="text" id="chs" name="current_health_status" class="form-control" value="{{obj.current_health_status}}">
+        </div>
+        <div class="col-sm">
+            <label for="diagnosedCount">No of Times COVID Test was made</label>
+            <input type="number" class="form-control" id="diagnosedCount" name="no_of_times_tested" value="{{obj.no_of_times_tested}}">
+        </div>
+    </div>
+    {%endif%}
+    <div class="form-group row">
+        <div class="col-sm">
+            <label for="hospital">Name of the Hospital Admitted</label>
+            <input type="text" name="hospital_name" id="hospital" class="form-control" placeholder="Hospital Name" value="{{obj.hospital_name}}">
+        </div>
+        <div class="col-sm">
+            <label for="icmrReport">Upload ICMR Report</label><br>
+            Link: <a href="{{obj.reports.url}}" target="_blank">Click Here</a>
+        </div>
+    </div>
+</form>
+{%endblock%}
