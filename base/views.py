@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from django.shortcuts import render,redirect
 from .models import SiteAnnouncements,ContactUs
 from django.contrib import messages
@@ -37,11 +36,3 @@ def register(request):
 def logout(request):
     #todo
     return redirect('/')
-=======
-from django.shortcuts import render
-from .models import SiteAnnouncements
-# Create your views here.
-def home(request):
-    announcement = SiteAnnouncements.objects.all()
-    return render(request,"home.html",{'announcement':announcement})
->>>>>>> 7804fdbc8beb87c0011895981248dcd449f93126
