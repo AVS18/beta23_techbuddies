@@ -1,0 +1,69 @@
+{%extends 'dashboard.html'%}
+{%block content%}
+<br><br>
+<form action="/profile" method="POST" enctype="multipart/form-data">
+    <div class="form-group row">
+        <div class="col-sm">
+            <label for="bgroup">Blood Group</label>
+            <select name="blood_group" id='bgroup' class="form-control" required>
+                <option value="O+">Select</option>
+                <option value="A+">A+</option>
+                <option value="A-">A+</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+            </select>
+        </div>
+        <div class="col-sm">
+            <label for="cad">Date on Which COVID 19 Tested Positive</label>
+            <input type="date" name="positive_date" class="form-control" required>
+        </div>
+    </div>
+    {%if request.user.user_type == "Donor"%}
+    <div class="form-group row">
+        <div class="col-sm">
+            <label for="cad">Date on Which COVID 19 Tested Negative</label>
+            <input type="date" name="negative_date" class="form-control" required>
+        </div>
+        <div class="col-sm">
+            <label for="vac">Vaccinated</label>
+            <select name="vaccinated" id='vac' class="form-control" required>
+                <option value="No">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+        </div>
+    </div>
+    {%else%}
+    <div class="form-group row">
+        <div class="col-sm">
+            <label for="chs">Current Health Status</label>
+            <select name="current_health_status" id='chs' class="form-control" required>
+                <option value="No">Select</option>
+                <option value="Normal">Normal</option>
+                <option value="Average">Average</option>
+                <option value="Critical">Critical</option>
+            </select>
+        </div>
+        <div class="col-sm">
+            <label for="diagnosedCount">No of Times COVID Test was made</label>
+            <input type="number" class="form-control" id="diagnosedCount" name="no_of_times_tested" required>
+        </div>
+    </div>
+    {%endif%}
+    <div class="form-group row">
+        <div class="col-sm">
+            <label for="hospital">Name of the Hospital Admitted</label>
+            <input type="text" name="hospital_name" id="hospital" class="form-control" placeholder="Hospital Name" required>
+        </div>
+        <div class="col-sm">
+            <label for="icmrReport">Upload ICMR Report</label>
+            <input type="file" name="report" id="icmrReport" class="form-control" required>
+        </div>
+    </div>
+    <input type="submit" value="Submit" class="btn btn-primary">
+</form>
+{%endblock%}

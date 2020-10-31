@@ -139,8 +139,8 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
+          <form action="/login" method="POST">
             <div class="modal-body">
-              <form action="/login" method="POST">
                 {%csrf_token%}
                 <div class="row">
                   <div class="col-sm">
@@ -156,12 +156,12 @@
                     </div>
                   </div>
                 </div>
-              </form>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Login</button>
+              <button type="submit" class="btn btn-primary">Login</button>
             </div>
+          </form>
           </div>
         </div>
       </div>
@@ -174,8 +174,8 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
+            <form action="/register" method="POST">
             <div class="modal-body">
-                <form action="/register" method="POST">
                     {%csrf_token%}
                   <div class="row">
                     <div class="col-sm">
@@ -201,7 +201,7 @@
                     <div class="col-sm">
                       <div class="form-group">
                         <label for="stream">Type</label>
-                        <select name="par_stream" id="stream" class="form-control">
+                        <select name="type" id="stream" class="form-control">
                             <option value="Select">Select</option>
                             <option value="Donor">Donor</option>
                             <option value="Receiver">Receiver</option>
@@ -209,12 +209,26 @@
                       </div>
                     </div>
                   </div>
-                </form>
+                  <div class="row">
+                    <div class="col-sm">
+                      <div class="form-group">
+                        <label for="uname">Username</label>
+                        <input type="text" name="username" id="uname" required class="form-control">
+                      </div>
+                    </div>
+                    <div class="col-sm">
+                      <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" name="password" id="password" required class="form-control">
+                      </div>
+                    </div>
+                  </div>  
               </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Register</button>
+              <button type="submit" class="btn btn-primary">Register</button>
             </div>
+            </form>
           </div>
         </div>
       </div>
