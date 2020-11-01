@@ -16,7 +16,7 @@
         <td>{{item.requested_by.current_health_status}}</td>
         <td>{{item.requested_by.no_of_times_tested}}</td>
         <td><a href="{{item.requested_by.reports.url}}" target="_blank" class="btn btn-outline-success">Click Here</a></td>
-        {%if item.requested_by.status == "Pending" %}
+        {%if item.status == "Pending" %}
         <td><a href="/statusUpdate/{{item.id}}/Accepted" class="btn btn-primary">Accept</a></td>
         <td><a href="/statusUpdate/{{item.id}}/Rejected" class="btn btn-danger">Reject</a></td>
         {%else%}
@@ -32,6 +32,7 @@
         <th>Current Health Status</th>
         <th>No of Times Tested</th>
         <th>ICMR Report</th>
+        <th>Status</th>
     </tr>
     {%for item in requests_made%}
     <tr>
@@ -39,6 +40,7 @@
         <td>{{item.requested_to.current_health_status}}</td>
         <td>{{item.requested_to.no_of_times_tested}}</td>
         <td><a href="{{item.requested_to.reports.url}}" target="_blank" class="btn btn-outline-success">Click Here</a></td>
+        <td>{{item.status}}</td>
     </tr>
     {%endfor%}
 </table>
@@ -58,7 +60,7 @@
         <td>{{item.requested_by.negative_date}}</td>
         <td>{{item.requested_by.vaccinated}}</td>
         <td><a href="{{item.requested_by.reports.url}}" target="_blank" class="btn btn-outline-success">Click Here</a></td>
-        {%if item.requested_by.status == "Pending" %}
+        {%if item.status == "Pending" %}
         <td><a href="/statusUpdate/{{item.id}}/Accepted" class="btn btn-primary">Accept</a></td>
         <td><a href="/statusUpdate/{{item.id}}/Rejected" class="btn btn-danger">Reject</a></td>
         {%else%}
@@ -74,6 +76,7 @@
         <th>Date on which Reported Negative</th>
         <th>Vaccinated</th>
         <th>ICMR Report</th>
+        <th>Status</th>
     </tr>
     {%for item in requests_made%}
     <tr>
@@ -81,6 +84,7 @@
         <td>{{item.requested_to.negative_date}}</td>
         <td>{{item.requested_to.vaccinated}}</td>
         <td><a href="{{item.requested_to.reports.url}}" target="_blank" class="btn btn-outline-success">Click Here</a></td>
+        <td>{{item.status}}</td>
     </tr>
     {%endfor%}
 </table>
