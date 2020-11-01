@@ -1,4 +1,39 @@
 {%extends "dashboard.html"%}
 {%block content%}
-None
+{%if request.user.user_type == "Donor"%}
+<table class="table table-striped table-bordered table-hover">
+    <caption>Requests for {{request.user.username}}</caption>
+    <tr>
+        <th>Name</th>
+        <th>Current Health Status</th>
+        <th>ICMR Report</th>
+        <th>Link</th>
+    </tr>
+    {%for item in obj%}
+    <tr>
+        <td>{{item.name}}</td>
+        <td>{{item.config.name}}</td>
+        <td>{{item.date_uploaded}}</td>
+        <td><a href="{{item.reports.url}}" target="_blank" class="btn btn-outline-success">Click Here</a></td>
+    </tr>
+    {%endfor%}
+</table>
+<table class="table table-striped table-bordered table-hover">
+    <caption>Requests {{request.user.username}} made</caption>
+    <tr>
+        <th>Name</th>
+        <th>Group</th>
+        <th>Date Uploaded</th>
+        <th>Link</th>
+    </tr>
+    {%for item in obj%}
+    <tr>
+        <td>{{item.name}}</td>
+        <td>{{item.config.name}}</td>
+        <td>{{item.date_uploaded}}</td>
+        <td><a href="{{item.user_file.url}}" target="_blank" class="btn btn-outline-success">Click Here</a></td>
+    </tr>
+    {%endfor%}
+</table>
+{%endif%}
 {%endblock%}
