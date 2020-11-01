@@ -39,6 +39,7 @@ def login(request):
             storage = messages.get_messages(request)
             storage.used = True
             messages.info(request,'Please Check your password and try again')
+            return redirect('/')
     return redirect('/dashboard')
 
 def register(request):
@@ -50,7 +51,8 @@ def register(request):
             user_type = request.POST["type"]
             username = request.POST["username"]
             password = request.POST["password"]
-            User.objects.create_user(first_name=first_name,email=email,phone=phone,user_type=user_type,username=username,password=password)
+            place = request.POST["place"]
+            User.objects.create_user(first_name=first_name,email=email,phone=phone,user_type=user_type,username=username,password=password,place=place)
             storage = messages.get_messages(request)
             storage.used = True
             messages.info(request,'Registration Success')
@@ -126,6 +128,11 @@ def display(request):
         messages.info(request,'Login to Continue')
         return redirect('/')
     my_profile, obj = check_profile_exist(request), None
+    if my_profile==None:
+        storage = messages.get_messages(request)
+        storage.used = True
+        messages.info(request,'Update your profile before checking the availability')
+        return redirect('/dashboard')
     if request.user.user_type=="Donor":
         if my_profile is not None:
             obj = Profile.objects.filter(person__user_type="Receiver",blood_group=my_profile.blood_group).union(Profile.objects.filter(person__user_type="Receiver",blood_group='O'+my_profile.blood_group[-1]))
@@ -133,10 +140,10 @@ def display(request):
                 storage = messages.get_messages(request)
                 storage.used = True
                 messages.info(request,'No Donors Available for the request')
-                return redirect('/')
+                return redirect('/dashboard')
         else:
             obj = Profile.objects.filter(person__user_type="Receiver")
-        return render(request,"display_donor.html",{'obj':obj})
+        return render(request,"display_donor.html",{'obj':obj,'places':places()})
     if request.user.user_type=="Receiver":
         if my_profile is not None:
             obj = Profile.objects.filter(person__user_type="Donor",blood_group=my_profile.blood_group).union(Profile.objects.filter(person__user_type="Donor",blood_group='O'+my_profile.blood_group[-1]))
@@ -147,16 +154,67 @@ def display(request):
                 return redirect('/dashboard')
         else:
             obj = Profile.objects.filter(person__user_type="Donor")
-        return render(request,"display_donor.html",{'obj':obj})
+        return render(request,"display_donor.html",{'obj':obj,'places':places()})
 
 def plasma_contact(request,other):
-    PlasmaContact.objects.create(requested_by=request.user,requested_to=User.objects.get(username=other),status="Pending")
+    PlasmaContact.objects.create(requested_by=Profile.objects.filter(person=request.user)[0],requested_to=Profile.objects.get(id=other),status="Pending")
     storage = messages.get_messages(request)
     storage.used = True
     messages.info(request,'Request Placed Successfully')
     return redirect('/dashboard')
 
 def displayContact(request):
-    requests_obtained = PlasmaContact.objects.filter(requested_to=request.user)
-    requests_made = PlasmaContact.objects.filter(requested_by=request.user)
+    requests_obtained = PlasmaContact.objects.filter(requested_to__person=request.user)
+    requests_made = PlasmaContact.objects.filter(requested_by__person=request.user)
     return render(request,'displayContact.html',{'requests_obtained':requests_obtained,'requests_made':requests_made})
+
+def statusUpdate(request,id,status):
+    obj = PlasmaContact.objects.get(id=id)
+    obj.status=status
+    obj.save()
+    if status=="Accepted":
+        PlasmaContact.objects.filter(requested_to=obj.requested_by).exclude(id=id).update(status="Rejected")
+        PlasmaContact.objects.filter(requested_by=obj.requested_to).exclude(id=id).update(status="Rejected")
+        if obj.requested_by.person.user_type=="Donor" and obj.requested_to.person.user_type=="Receiver":
+            mail="Greetings\n\nDonor "+obj.requested_by.person.first_name+' Accepted your request and ready to donate plasma.\n\n'
+            mail = mail+"Donor Details:\n"+"Name: "+obj.requested_by.person.username+"\n"+"Email ID: "+obj.requested_by.person.email+"\n"
+            mail = mail+"Receiver Details:\n"+"Name: "+obj.requested_to.person.username+"\n"+"Email ID: "+obj.requested_to.person.email+"\n"
+            mail = mail+"Thank you for the Donation. Keep up this chain to rule out COVID 19 in the world\n\n."
+            send_mail("Plasma Request Status",mail,from_email='adityaintern11@gmail.com',recipient_list=[obj.requested_by.person.email,obj.requested_to.person.email])
+        elif obj.requested_by.person.user_type=="Receiver" and obj.requested_to.person.user_type=="Donor":
+            mail="Greetings\n\nDonor "+obj.requested_to.person.first_name+' Accepted your request and ready to donate plasma.\n\n'
+            mail = mail+"Donor Details:\n"+"Name: "+obj.requested_to.person.username+"\n"+"Email ID: "+obj.requested_to.person.email+"\n"
+            mail = mail+"Receiver Details:\n"+"Name: "+obj.requested_by.person.username+"\n"+"Email ID: "+obj.requested_by.person.email+"\n"
+            mail = mail+"Thank you for the Donation. Keep up this chain to rule out COVID 19 in the world\n\n."
+            send_mail("Plasma Request Status",mail,from_email='adityaintern11@gmail.com',recipient_list=[obj.requested_by.person.email,obj.requested_to.person.email])
+    storage = messages.get_messages(request)
+    storage.used = True
+    messages.info(request,status+" Successfully")
+    return redirect('/dashboard')
+def places():
+    return User.objects.values('place').distinct()
+def filter(request):
+    place = request.POST["place"]
+    my_profile, obj = check_profile_exist(request), None
+    if request.user.user_type=="Donor":
+        if my_profile is not None:
+            obj = Profile.objects.filter(person__user_type="Receiver",blood_group=my_profile.blood_group,person__place=place).union(Profile.objects.filter(person__user_type="Receiver",blood_group='O'+my_profile.blood_group[-1],person__place=place))
+            if len(obj)==0:
+                storage = messages.get_messages(request)
+                storage.used = True
+                messages.info(request,'No Donors Available for the request')
+                return redirect('/dashboard')
+        else:
+            obj = Profile.objects.filter(person__user_type="Receiver",person__place=place)
+        return render(request,"display_donor.html",{'obj':obj,'places':places()})
+    if request.user.user_type=="Receiver":
+        if my_profile is not None:
+            obj = Profile.objects.filter(person__user_type="Donor",person__place=place,blood_group=my_profile.blood_group).union(Profile.objects.filter(person__user_type="Donor",person__place=place,blood_group='O'+my_profile.blood_group[-1]))
+            if len(obj)==0:
+                storage = messages.get_messages(request)
+                storage.used = True
+                messages.info(request,'No Donors Available for the request')
+                return redirect('/dashboard')
+        else:
+            obj = Profile.objects.filter(person__user_type="Donor",person__place=place)
+        return render(request,"display_donor.html",{'obj':obj,'places':places()})

@@ -7,6 +7,7 @@ class User(AbstractUser):
     choices = (('Donor','Donor'),('Receiver','Receiver'))
     user_type = models.CharField(choices=choices,max_length=8,null=True,blank=True)
     verification_status = models.BooleanField(default=False)
+    place = models.CharField(max_length=50,blank=True,null=True)
 
 class SiteAnnouncements(models.Model):
     message = models.CharField(max_length=150)
@@ -33,4 +34,4 @@ class Profile(models.Model):
 class PlasmaContact(models.Model):
     requested_by = models.ForeignKey(Profile,on_delete=models.CASCADE, related_name="requested_by")
     requested_to = models.ForeignKey(Profile,on_delete=models.CASCADE, related_name="requested_to")
-    status = models.CharField(max_length=10,choices=(('Accepted','Accepted'),('Pending','Pending'),('Rejected','Rejected')))
+    status = models.CharField(max_length=10,choices=(('Accepted','Accepted'),('Pending','Pending'),('Rejected','Rejected')),default="Pending")

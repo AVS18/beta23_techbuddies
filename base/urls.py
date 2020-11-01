@@ -11,5 +11,7 @@ urlpatterns = [
     path('profile',views.profile,name="profile"),
     path('display',views.display,name="display"),
     path('plasma_contact/<str:other>',views.plasma_contact,name="plasma_contact"),
-    path('displayContact',views.displayContact,name="displayContact")
+    path('displayContact',views.displayContact,name="displayContact"),
+    path('statusUpdate/<str:id>/<str:status>',views.statusUpdate,name="statusUpdate"),
+    path('filter',views.filter,name="filter")
 ]
