@@ -31,6 +31,6 @@ class Profile(models.Model):
     hospital_name = models.CharField(max_length=200)
 
 class PlasmaContact(models.Model):
-    requested_by = models.ForeignKey(User,on_delete=models.CASCADE, related_name="requested_by")
-    requested_to = models.ForeignKey(User,on_delete=models.CASCADE, related_name="requested_to")
+    requested_by = models.ForeignKey(Profile,on_delete=models.CASCADE, related_name="requested_by")
+    requested_to = models.ForeignKey(Profile,on_delete=models.CASCADE, related_name="requested_to")
     status = models.CharField(max_length=10,choices=(('Accepted','Accepted'),('Pending','Pending'),('Rejected','Rejected')))
