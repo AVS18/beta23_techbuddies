@@ -1,5 +1,20 @@
 {% extends "dashboard.html"%}
 {%block content%}
+<form action="/filter" method="POST">
+  {%csrf_token%}
+  <div class="row col-sm form-group">
+    <label for="my_places">Place</label>
+    <select name="place" id="my_places" class="form-control">
+      <option value="Select">Select</option>
+      {%for item in places%}
+      <option value="{{item.place}}">{{item.place}}</option>
+      {%endfor%}
+    </select>
+  </div>
+  <div class="row col-sm form-group">
+    <input type="submit" value="Filter" class="btn btn-outline-info">
+  </div>
+</form>
 <div class="card-deck">
     {%if request.user.user_type == "Donor"%}
     {%for item in obj%}
@@ -13,7 +28,7 @@
             <li class="list-group-item">Verified User: {{item.person.verification_status}}</li>
           </ul>
       </div>
-      <a class="btn btn-info" href="/plasma_contact/{{item.person.username}}">Click to Contact</a>
+      <a class="btn btn-info" href="/plasma_contact/{{item.id}}">Click to Contact</a>
     </div>  
     {%endfor%}
     {%else%}
@@ -28,7 +43,7 @@
               <li class="list-group-item">Verified User: {{item.person.verification_status}}</li>
             </ul>
         </div>
-        <a class="btn btn-info" href="/plasma_contact/{{item.person.username}}">Click to Contact</a>
+        <a class="btn btn-info" href="/plasma_contact/{{item.id}}">Click to Contact</a>
     </div>  
     {%endfor%}
     {%endif%}

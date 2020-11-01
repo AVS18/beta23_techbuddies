@@ -2,38 +2,92 @@
 {%block content%}
 {%if request.user.user_type == "Donor"%}
 <table class="table table-striped table-bordered table-hover">
-    <caption>Requests for {{request.user.username}}</caption>
+    <caption>Details of Receivers requested {{request.user.username}} for plasma donation</caption>
     <tr>
         <th>Name</th>
         <th>Current Health Status</th>
+        <th>No of Times Tested</th>
         <th>ICMR Report</th>
-        <th>Link</th>
+        <th colspan="2" style="text-align: center;">Status</th>
     </tr>
-    {%for item in obj%}
+    {%for item in requests_obtained%}
     <tr>
-        <td>{{item.name}}</td>
-        <td>{{item.config.name}}</td>
-        <td>{{item.date_uploaded}}</td>
-        <td><a href="{{item.reports.url}}" target="_blank" class="btn btn-outline-success">Click Here</a></td>
+        <td>{{item.requested_by.person.first_name}}</td>
+        <td>{{item.requested_by.current_health_status}}</td>
+        <td>{{item.requested_by.no_of_times_tested}}</td>
+        <td><a href="{{item.requested_by.reports.url}}" target="_blank" class="btn btn-outline-success">Click Here</a></td>
+        {%if item.requested_by.status == "Pending" %}
+        <td><a href="/statusUpdate/{{item.id}}/Accepted" class="btn btn-primary">Accept</a></td>
+        <td><a href="/statusUpdate/{{item.id}}/Rejected" class="btn btn-danger">Reject</a></td>
+        {%else%}
+        <td colspan="2" style="text-align: center;">{{item.status}}</td>
+        {%endif%}
     </tr>
     {%endfor%}
 </table>
 <table class="table table-striped table-bordered table-hover">
-    <caption>Requests {{request.user.username}} made</caption>
+    <caption>Requests made by {{request.user.username}} to donate plasma</caption>
     <tr>
         <th>Name</th>
-        <th>Group</th>
-        <th>Date Uploaded</th>
-        <th>Link</th>
+        <th>Current Health Status</th>
+        <th>No of Times Tested</th>
+        <th>ICMR Report</th>
     </tr>
-    {%for item in obj%}
+    {%for item in requests_made%}
     <tr>
-        <td>{{item.name}}</td>
-        <td>{{item.config.name}}</td>
-        <td>{{item.date_uploaded}}</td>
-        <td><a href="{{item.user_file.url}}" target="_blank" class="btn btn-outline-success">Click Here</a></td>
+        <td>{{item.requested_to.person.first_name}}</td>
+        <td>{{item.requested_to.current_health_status}}</td>
+        <td>{{item.requested_to.no_of_times_tested}}</td>
+        <td><a href="{{item.requested_to.reports.url}}" target="_blank" class="btn btn-outline-success">Click Here</a></td>
     </tr>
     {%endfor%}
 </table>
+{%else%}
+<table class="table table-striped table-bordered table-hover">
+    <caption>Donors Available to donate plasma for {{request.user.username}}</caption>
+    <tr>
+        <th>Name</th>
+        <th>Date on which Reported Negative</th>
+        <th>Vaccinated</th>
+        <th>ICMR Report</th>
+        <th colspan="2">Status</th>
+    </tr>
+    {%for item in requests_obtained%}
+    <tr>
+        <td>{{item.requested_by.person.first_name}}</td>
+        <td>{{item.requested_by.negative_date}}</td>
+        <td>{{item.requested_by.vaccinated}}</td>
+        <td><a href="{{item.requested_by.reports.url}}" target="_blank" class="btn btn-outline-success">Click Here</a></td>
+        {%if item.requested_by.status == "Pending" %}
+        <td><a href="/statusUpdate/{{item.id}}/Accepted" class="btn btn-primary">Accept</a></td>
+        <td><a href="/statusUpdate/{{item.id}}/Rejected" class="btn btn-danger">Reject</a></td>
+        {%else%}
+        <td colspan="2" style="text-align: center;">{{item.status}}</td>
+        {%endif%}
+    </tr>
+    {%endfor%}
+</table>
+<table class="table table-striped table-bordered table-hover">
+    <caption>Requests made by {{request.user.username}} for plasma donation</caption>
+    <tr>
+        <th>Name</th>
+        <th>Date on which Reported Negative</th>
+        <th>Vaccinated</th>
+        <th>ICMR Report</th>
+    </tr>
+    {%for item in requests_made%}
+    <tr>
+        <td>{{item.requested_to.person.first_name}}</td>
+        <td>{{item.requested_to.negative_date}}</td>
+        <td>{{item.requested_to.vaccinated}}</td>
+        <td><a href="{{item.requested_to.reports.url}}" target="_blank" class="btn btn-outline-success">Click Here</a></td>
+    </tr>
+    {%endfor%}
+</table>
+<p class="text">Instructions</p>
+<ul>
+    <li>A single donor donate plasma to single receiver only</li>
+    <li>Requests will be automatically cancelled at both the ends</li>
+</ul>
 {%endif%}
 {%endblock%}
